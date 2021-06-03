@@ -5,7 +5,14 @@ import numpy as np
 
 
 def make_model(opt):
-    return DRN(opt)
+    teacher_model = DRN(opt)
+    return teacher_model
+
+def make_student_model(opt):
+    #config student model's RCAB 
+    opt.n_blocks = 6
+    student_model = DRN(opt)
+    return student_model
 class DRN(nn.Module):
     def __init__(self, opt, conv=common.default_conv):
         super(DRN, self).__init__()
@@ -15,9 +22,6 @@ class DRN(nn.Module):
         n_blocks = opt.n_blocks
         n_feats = opt.n_feats
         kernel_size = 3
-        self.dct = DCT(opt)
-        self.SRCNN = SRCNN()
-
         act = nn.ReLU(True)
 
         self.upsample = nn.Upsample(scale_factor=max(opt.scale),

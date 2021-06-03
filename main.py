@@ -18,9 +18,10 @@ checkpoint = Checkpoint(args)
 
 if checkpoint.ok:
     loader = data.Data(args)
-    model = model.Model(args, checkpoint)
+    teacher_model = model.Model(args, checkpoint)
+    student_model = model.StudentModel(args, checkpoint)
     loss = loss.Loss(args, checkpoint) if not args.test_only else None
-    t = Trainer(args, loader, model, loss, checkpoint)
+    t = Trainer(args, loader, teacher_model, student_model, loss, checkpoint)
     def main():
         while not t.terminate():
             t.train()

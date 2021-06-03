@@ -1,10 +1,9 @@
 import argparse
 import utility
 import numpy as np
-import math
-import decimal
-parser = argparse.ArgumentParser(description='DRN')
 
+parser = argparse.ArgumentParser(description='DRN')
+#환경설정
 parser.add_argument('--n_threads', type=int, default=0,
                     help='number of threads for data loading')
 parser.add_argument('--cpu', action='store_true',
@@ -21,9 +20,10 @@ parser.add_argument('--data_test', type=str, default='Set5',
                     help='test dataset name')
 parser.add_argument('--data_range', type=str, default='',
                     help='train/test data range')
-# parser.add_argument('--scale', type=int, default=4,
-#                     help='super resolution scale')
-parser.add_argument('--scale', type=str, default='2.0',
+
+#고정파리미터
+
+parser.add_argument('--scale', type=int, default=4,
                     help='super resolution scale')
 parser.add_argument('--patch_size', type=int, default=80,
                     help='output patch size')
@@ -41,14 +41,14 @@ parser.add_argument('--pre_train_dual', type=str, default='.',
 parser.add_argument('--n_blocks', type=int, default=30,
                     help='number of residual blocks, 16|30|40|80')
 parser.add_argument('--n_feats', type=int, default=16,
-                    help='number of feature maps')
+                    help='number of feature maps__org_16')
 parser.add_argument('--negval', type=float, default=0.2,
                     help='Negative value parameter for Leaky ReLU')
 parser.add_argument('--test_every', type=int, default =10000,
                     help='do test per every N batches')
 parser.add_argument('--epochs', type=int, default=1000,
                     help='number of epochs to train')
-parser.add_argument('--batch_size', type=int, default=1,
+parser.add_argument('--batch_size', type=int, default=8,
                     help='input batch size for training')
 parser.add_argument('--self_ensemble', action='store_true',
                     help='use self-ensemble method for test')
@@ -78,30 +78,17 @@ parser.add_argument('--print_every', type=int, default=100,
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save_results', action='store_true',
                     help='save output results')
-                    
-parser.add_argument('--pre_train_metasr', type=str, default='.',
-                    help='pre-trained dual model directory')
+
 args = parser.parse_args()
-strscale = args.scale.split('.')
-args.scale = math.floor(float(strscale[0]))
-args.float_scale = float(strscale[1]) / 10
 
 utility.init_model(args)
 
-
-args.scale = [pow(2, s+1) for s in range(int(np.log2(args.scale)))]
-
-
-# if args.scale=='':
-#     import numpy as np
-#     #args.scale = np.linspace(1.1,4,30)
-#     args.scale = [1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0]
-#     #print(args.scale)
-# else:
-#     args.scale = list(map(lambda x: float(x), args.scale.split('+')))
-# print(args.scale)
-
-
+# scale = [2,4] for 4x SR to load data
+# scale = [2,4,8] for 8x SR to load data
+if (args.scale & (args.scale -1)) ==0:
+    args.scale = [pow(2, s+1) for s in range(int(np.log2(args.scale)))]
+elif args.scale ==3:
+    args.scale = [3]
 
 for arg in vars(args):
     if vars(args)[arg] == 'True':
