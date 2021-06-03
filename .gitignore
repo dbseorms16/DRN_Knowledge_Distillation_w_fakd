@@ -1,0 +1,32 @@
+# Default ignored files
+*.pt
+/*.pt
+*.txt
+*.jpg
+*.png
+*.pdf
+
+
+/shelf/
+/workspace.xml
+/*.pyc
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+/LICENSE
+/experiments/results/
+/experiments/confing.txt
+*/__pycache__
+/__pycache__
+/.idea
+/dataset
+/experiments
+/*.yaml
+/trained_models/
+experiments/config.txt
+experiments/log.txt
+experiments/optimizer.pt
+experiments/psnr_log.pt
