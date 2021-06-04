@@ -78,6 +78,11 @@ parser.add_argument('--print_every', type=int, default=100,
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save_results', action='store_true',
                     help='save output results')
+### Knowledge distallation
+parser.add_argument('--alpha', type=float, default=0.5, help='TS loss coefficient')
+parser.add_argument('--feature_loss_used', default=1, type=int, help='whether to use feature loss')
+parser.add_argument('--feature_distilation_type', default="10*SA", type=str, help='feature distilation type')
+parser.add_argument('--features', default=3, type=int, help='features selected')
 
 args = parser.parse_args()
 

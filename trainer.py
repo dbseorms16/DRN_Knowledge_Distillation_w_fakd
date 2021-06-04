@@ -40,6 +40,10 @@ class Trainer():
             '[Epoch {}]\tLearning rate: {:.2e}'.format(epoch, Decimal(lr))
         )
         self.loss.start_log()
+
+        for p in self.model.parameters():
+            p.requires_grad = False
+                
         self.student_model.train()
         timer_data, timer_model = utility.timer(), utility.timer()
         for batch, (lr, hr, _) in enumerate(self.loader_train):
@@ -59,23 +63,25 @@ class Trainer():
             sr2lr = []
             stu_sr2lr = []
             
-            for i in range(len(self.dual_models)):
-                sr2lr_i = self.dual_models[i](sr[i - len(self.dual_models)])
-                sr2lr.append(sr2lr_i)
+            # for i in range(len(self.dual_models)):
+            #     sr2lr_i = self.dual_models[i](sr[i - len(self.dual_models)])
+            #     sr2lr.append(sr2lr_i)
 
-            for i in range(len(self.student_dual_models)):
-                stu_sr2lr_i = self.dual_models[i](sr[i - len(self.student_dual_models)])
-                stu_sr2lr.append(stu_sr2lr_i)
+            # for i in range(len(self.student_dual_models)):
+            #     stu_sr2lr_i = self.dual_models[i](sr[i - len(self.student_dual_models)])
+            #     stu_sr2lr.append(stu_sr2lr_i)
 
             # compute primary loss
-            loss_primary = self.loss(sr[-1], hr)
-            for i in range(1, len(sr)):
-                loss_primary += self.loss(sr[i - 1 - len(sr)], lr[i - len(sr)])
+            loss_primary = self.loss(student_sr, sr[-1], hr, student_fms, teacher_fms)
+
+            loss_dual = self.loss(sr2lr[0], lr[0])
+            
+            # for i in range(1, len(sr)):
+            #     loss_primary += self.loss(sr[i - 1 - len(sr)], lr[i - len(sr)])
             
             # compute dual loss
-            loss_dual = self.loss(sr2lr[0], lr[0])
-            for i in range(1, len(self.scale)):
-                loss_dual += self.loss(sr2lr[i], lr[i])
+            # for i in range(1, len(self.scale)):
+            #     loss_dual += self.loss(sr2lr[i], lr[i])
 
             # compute total loss
             loss =  loss_primary+ self.opt.dual_weight * loss_dual

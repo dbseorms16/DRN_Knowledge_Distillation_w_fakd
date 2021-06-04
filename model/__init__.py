@@ -34,13 +34,13 @@ class Model(nn.Module):
         
         self.load(opt.pre_train, opt.pre_train_dual, cpu=opt.cpu)
 
-        if not opt.test_only:
-            print(self.model, file=ckp.log_file)
-            print(self.dual_models, file=ckp.log_file)
+        # if not opt.test_only:
+        #     print(self.model, file=ckp.log_file)
+        #     print(self.dual_models, file=ckp.log_file)
         
         # compute parameter
-        num_parameter = count_parameters(self.model)
-        ckp.write_log(f"The number of parameters is {num_parameter / 1000 ** 2:.2f}M")
+        # num_parameter = count_parameters(self.model)
+        # ckp.write_log(f"The number of parameters is {num_parameter / 1000 ** 2:.2f}M")
 
     def forward(self, x, idx_scale=0):
         self.idx_scale = idx_scale
