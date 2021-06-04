@@ -2,6 +2,7 @@ import os
 import math
 import torch
 import torch.nn as nn
+import torch.nn.parameter as Parameter
 from model.common import DownBlock
 import model.drn
 from option import args
@@ -97,34 +98,16 @@ class Model(nn.Module):
             kwargs = {}
         #### load primal model ####
 
-        weight4 = torch.load(pre_train, **kwargs)
-       
-        # for name in dual_models[0]:
-        #     dual_models[0][name].requires_grad = False
+        pre_train_state = torch.load(pre_train, **kwargs)
+        own_state = self.get_model().state_dict()      
+        print(pre_train_state['up_blocks.0.0.body.0.bias'])
 
-
-        # print(weight4['P2W.0.bias'].requires_grad)
-        # metasr = torch.load(pre_train_metasr, **kwargs)[0]
-        # p2w = []
-        # for param in metasr:
-        #     paramsplit = param.split('.')
-        #     if paramsplit == 'P2W':
-        #         p2w.append(param)
-
-        # p2weight={}
-        # for p2 in p2w:
-        #     p2weight[p2] = metasr[0][p2]
-            # p2weight.update(metasr[p2])
-        # new.update(p2weight)
-
-        # param.requires_grad = False  
 
         if pre_train != '.':
             print('Loading model from {}'.format(pre_train))
-            self.get_model().load_state_dict(
-                weight4,
-                strict=False
-            )
+            for o_name, p_name in zip(own_state, pre_train_state):
+                self.get_model().state_dict()[o_name].copy_(pre_train_state[p_name])
+                
         #### load dual model ####
         if pre_train_dual != '.':
             print('Loading dual model from {}'.format(pre_train_dual))

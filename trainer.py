@@ -40,8 +40,8 @@ class Trainer():
             '[Epoch {}]\tLearning rate: {:.2e}'.format(epoch, Decimal(lr))
         )
         self.loss.start_log()
-
-        for p in self.model.parameters():
+        print(self.model.state_dict()['rcab0.0.body.0.bias'])
+        for name, p in self.model.named_parameters():
             p.requires_grad = False
                 
         self.student_model.train()
@@ -56,8 +56,8 @@ class Trainer():
             for i in range(len(self.dual_optimizers)):
                 self.dual_optimizers[i].zero_grad()
 
-            sr = self.model(lr[0])
-            student_sr = self.student_model(lr[0])
+            teacher_fms ,sr = self.model(lr[0])
+            student_fms, student_sr = self.student_model(lr[0])
 
 
             sr2lr = []
@@ -75,7 +75,7 @@ class Trainer():
             loss_primary = self.loss(student_sr, sr[-1], hr, student_fms, teacher_fms)
 
             loss_dual = self.loss(sr2lr[0], lr[0])
-            
+
             # for i in range(1, len(sr)):
             #     loss_primary += self.loss(sr[i - 1 - len(sr)], lr[i - len(sr)])
             
