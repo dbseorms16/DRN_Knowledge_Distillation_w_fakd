@@ -35,7 +35,7 @@ def main():
     testsets = 'dataset/benchmark/face_test'     # fixed
     results = 'dataset/benchmark/face_test/LR_bicubic'       # fixed
 
-    # result_name = testset_name + '_' + model_name + '_bicubic'
+    result_name = testset_name + '_' + model_name + '_bicubic'
 
 
     # ----------------------------------------
