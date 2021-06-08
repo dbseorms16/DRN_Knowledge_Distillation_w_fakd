@@ -61,7 +61,7 @@ class Trainer():
 
 
             sr2lr = []
-            stu_sr2lr = []
+            # stu_sr2lr = []
             
             # for i in range(len(self.dual_models)):
             #     sr2lr_i = self.dual_models[i](sr[i - len(self.dual_models)])
