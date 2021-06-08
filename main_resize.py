@@ -25,7 +25,6 @@ def main():
     testset_name = 'HR'     # test set,  'set5' | 'srbsd68'
     need_degradation = True    # default: True
     sf = 2                    # scale factor, only from {2, 3, 4}
-    show_img = False           # default: False
     save_L = True              # save LR image
 
 
